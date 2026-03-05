@@ -1,0 +1,37 @@
+name: Selenium Java Automation
+
+on:
+  push:
+    branches: [ main ]        # Runs when you push to main
+  workflow_dispatch:          # Manual trigger
+
+jobs:
+  selenium-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repo
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Setup Java
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'  # OpenJDK
+          java-version: '17'       # Match your project version
+
+      # Step 3: Build project using Maven
+      - name: Build Project
+        run: mvn clean compile
+
+      # Step 4: Run Selenium TestNG tests
+      - name: Run Selenium Tests
+        run: mvn test
+
+      # Step 5 (Optional): Archive TestNG reports
+      - name: Upload TestNG Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: testng-reports
+          path: target/surefire-reports/
